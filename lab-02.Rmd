@@ -14,10 +14,17 @@ library(tidyverse)
 ```{r load-data, message=FALSE}
 plastic_waste <- read_csv("data/plastic-waste.csv")
 ```
-
+```{r}
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap)) +
+  geom_histogram(binwidth = 0.2)
+```
+```{r}
+plastic_waste %>%
+  filter(plastic_waste_per_cap > 3.5)
+```
 Commençons par filtrer les données pour retirer le point représenté par Trinité et Tobago (TTO) qui est un outlier.
 
-```{r filter-data, message=FALSE}
+```{r}
 plastic_waste <- plastic_waste %>%
   filter(plastic_waste_per_cap < 3.5)
 ```
@@ -28,16 +35,38 @@ plastic_waste <- plastic_waste %>%
 ### Exercise 1
 
 ```{r plastic-waste-continent}
-# insert code here
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap))+
+  geom_histogram(binwidth = 0.2)+
+  labs(title="quantité de déchets plastique par habitants suivant les continents",x="déchets plastique par habitants")+
+  facet_wrap(~continent,ncol=3)
 ```
+nous pouvons remarquer qu'en afrique peu de pays on un nombre de dechets plastic superieur à 0,25 par habitants, de même pour l'océanie. en amerique du nors quelques pays on eu un nombre de dechets par habitant superieur à 0,25 mais relativement plus en dessous. pour conclure la plupart des pays peux importe le continent on en moyenne moins de 0,25 déchets plastique par habitants.
 
 ### Exercise 2
 
 ```{r plastic-waste-density}
-# insert code here
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap))+
+  geom_density()
 ```
 
-Réponse à la question...
+```{r plastic-waste-density}
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap,color=continent))+
+  geom_density()+
+  labs(title="densité de déchets plastique par habitants par continents",x="déchets plastique par habitants",y="densité",color="continents" )
+```
+```{r plastic-waste-density}
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap,color=continent,fill=continent))+
+  geom_density()+
+  labs(title="densité de déchets plastique par habitants par continents",x="déchets plastique par habitants",y="densité",fill="continents" )
+```
+je n'ai pas compris et pas réussi a n'afficher qu'une seule légende pour les couleurs/fill
+
+```{r plastic-waste-density}
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap,color=continent,fill=continent))+
+  geom_density(alpha=0.4)+
+  labs(title="densité de déchets plastique par habitants par continents",x="déchets plastique par habitants",y="densité",fill="continents" )
+```
+la partie aes ou nous incluons couleur et fill correspond directement au données et fait partie de l'"aesthetic" des données alors que le réglage en transparance alpha correspond a l'esthetique du graphique en lui même mais n'est pas relié au données
 
 ### Exercise 3
 
