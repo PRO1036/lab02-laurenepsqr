@@ -16,12 +16,15 @@ plastic_waste <- read_csv("data/plastic-waste.csv")
 ```
 ```{r}
 ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap)) +
-  geom_histogram(binwidth = 0.2)
+  geom_histogram(binwidth = 0.2)+
+  labs(title="distribution générale des déchets plastiques par habitant en 2010",x="dechets plastiques par habitants")
 ```
 ```{r}
 plastic_waste %>%
   filter(plastic_waste_per_cap > 3.5)
 ```
+trinité et tobago = ile sur lequel on y retrouve le plus haut taux de déchets par habitants au monde (1,5kg/hab/jour)
+
 Commençons par filtrer les données pour retirer le point représenté par Trinité et Tobago (TTO) qui est un outlier.
 
 ```{r}
@@ -37,79 +40,153 @@ plastic_waste <- plastic_waste %>%
 ```{r plastic-waste-continent}
 ggplot(plastic_waste,aes(x=plastic_waste_per_cap))+
   geom_histogram(binwidth = 0.2)+
-  labs(title="quantité de déchets plastique par habitants suivant les continents",x="déchets plastique par habitants")+
+  labs(title="quantité de déchets plastiques par habitant suivant les continents",x="déchets plastiques par habitant")+
   facet_wrap(~continent,ncol=3)
 ```
-nous pouvons remarquer qu'en afrique peu de pays on un nombre de dechets plastic superieur à 0,25 par habitants, de même pour l'océanie. en amerique du nors quelques pays on eu un nombre de dechets par habitant superieur à 0,25 mais relativement plus en dessous. pour conclure la plupart des pays peux importe le continent on en moyenne moins de 0,25 déchets plastique par habitants.
+nous pouvons remarquer qu'en afrique peu de pays on un nombre de déchets plastiques superieur à 0,25 par habitants, de même pour l'océanie. en amerique du nord quelques pays on un nombre de déchets par habitant superieur à 0,25 mais relativement plus en dessous. pour conclure la plupart des pays peux importe le continent on en moyenne moins de 0,25 déchets plastique par habitants.
 
 ### Exercise 2
 
 ```{r plastic-waste-density}
 ggplot(plastic_waste,aes(x=plastic_waste_per_cap))+
-  geom_density()
+  geom_density()+
+  labs(title="densité de déchets plastiques par habitant",x="déchets plastiques par habitant",y="densité")
 ```
 
 ```{r plastic-waste-density}
 ggplot(plastic_waste,aes(x=plastic_waste_per_cap,color=continent))+
   geom_density()+
-  labs(title="densité de déchets plastique par habitants par continents",x="déchets plastique par habitants",y="densité",color="continents" )
+  labs(title="densité de déchets plastiques par habitant par continents",x="déchets plastiques par habitant",y="densité",color="continents" )
 ```
 ```{r plastic-waste-density}
 ggplot(plastic_waste,aes(x=plastic_waste_per_cap,color=continent,fill=continent))+
-  geom_density()+
-  labs(title="densité de déchets plastique par habitants par continents",x="déchets plastique par habitants",y="densité",fill="continents" )
+  geom_density(aes(color=after_scale(fill)))+
+  labs(title="densité de déchets plastiques par habitant par continents",x="déchets plastiques par habitant",y="densité",fill="continents" )
 ```
-je n'ai pas compris et pas réussi a n'afficher qu'une seule légende pour les couleurs/fill
+
 
 ```{r plastic-waste-density}
 ggplot(plastic_waste,aes(x=plastic_waste_per_cap,color=continent,fill=continent))+
-  geom_density(alpha=0.4)+
-  labs(title="densité de déchets plastique par habitants par continents",x="déchets plastique par habitants",y="densité",fill="continents" )
+  geom_density(alpha=0.4,aes(color=after_scale(fill)))+
+  labs(title="densité de déchets plastiques par habitant par continents",x="déchets plastiques par habitant",y="densité",fill="continents" )
 ```
-la partie aes ou nous incluons couleur et fill correspond directement au données et fait partie de l'"aesthetic" des données alors que le réglage en transparance alpha correspond a l'esthetique du graphique en lui même mais n'est pas relié au données
+la partie aes ou nous incluons couleur et fill correspond directement au données et fait partie de "l'aesthetic" des données alors que le réglage en transparence alpha correspond a l'esthétique du graphique en lui même mais n'est pas relié au données
 
 ### Exercise 3
 
 Boxplot:
 
 ```{r plastic-waste-boxplot}
-# insert code here
+ggplot(plastic_waste, aes(x = continent,
+                  y = plastic_waste_per_cap)) +
+  geom_boxplot() +
+  labs(
+    x = "continents",
+    y = "déchets plastiques par habitant",
+    title = "déchets plastiques par habitant par continents"
+  )
 ```
 
 Violin plot:
 
 ```{r plastic-waste-violin}
-# insert code here
+ggplot(plastic_waste, aes(x = continent,
+                  y = plastic_waste_per_cap)) +
+  geom_violin() +
+  labs(
+    x = "continents",
+    y = "déchets plastiques par habitant",
+    title = "déchets plastiques par habitant par continents")
 ```
 
-Réponse à la question...
+la représentation en violon montre un peu mieux la distribution suivant les continents et permet de voir quel continent à le plus de pays avec de faible/fort déchets par habitants
 
 ### Exercise 4
 
 
 ```{r plastic-waste-mismanaged}
-# insert code here
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap,y=mismanaged_plastic_waste_per_cap,color=continent))+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  labs(title = "Relation entre les déchets Gérés et les déchets non gérés",x = "Déchets plastiques par habitant",y = "Déchets plastiques non gérés par habitant",color = "Continent")+
+  facet_wrap(~continent,ncol=3)
 ```
+certaine pays on plutot une tendance linéaire/positive tel que l'afrique, l'amérique du sud montrant donc les déchets géré étant relativement egal au malgérés sur le continent.en europe nous remarquons une tendance droite, pratiquement négative du au peu de dechet malgérés.en asie les résultats sont un peu plis dissipésmontrant uen assez grande variabilité.en amérique du nord, les déchets sont relativement bien géré. cela nous montre une certaine corrélation entre les pays assez développés (europe/amérique du nord) gérant mieux leurs déchets et moins développés(afrique/amérique du sud) gérant un peu moins bien leur déchets.chaque droites de tendance varie beaucoup en fonction des continents due au différences entre les pays par continents et les différence au niveau développement,revenu...
 
-Réponse à la question...
-
+test avec dechets plastiques mal géré (total mais pas par habitant)
+```{r plastic-waste-mismanaged}
+ggplot(plastic_waste,aes(x=plastic_waste_per_cap,y=mismanaged_plastic_waste,color=continent))+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  labs(title = "Relation entre les déchets Gérés et les déchets non gérés",x = "Déchets plastiques par habitant",y = "Déchets plastiques non gérés",color = "Continent")+
+  facet_wrap(~continent,ncol=3)
+```
 ### Exercise 5
 
 
 ```{r plastic-waste-population-total}
-# insert code here
+ggplot(plastic_waste,aes(x=total_pop,y=plastic_waste_per_cap))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()+
+  geom_smooth(method = "lm", se = FALSE)+
+  labs(title = "Relation entre les déchets plastiques et la population totale",x = "population totale",y = "Déchets plastiques par habitant")
 ```
+
 
 ```{r plastic-waste-population-coastal}
-# insert code here
+ggplot(plastic_waste,aes(x=coastal_pop,y=plastic_waste_per_cap))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()+
+  geom_smooth(method = "lm", se = FALSE)+
+  labs(title = "Relation entre les déchets plastiques et la population cotière",x = "population cotière",y = "Déchets plastiques par habitant")
+```
+```{r}
+install.packages("ggpubr")
 ```
 
-Réponse à la question...
+```{r}
+library(ggpubr)
 
+```
+```{r}
+library(tidyverse)
+
+# Reshape en format long
+plastic_long <- plastic_waste %>%
+  pivot_longer(cols = c(total_pop, coastal_pop), 
+               names_to = "type_pop", 
+               values_to = "population")
+
+# Créer le graphique
+ggplot(plastic_long, aes(x = population, y = plastic_waste_per_cap, color = type_pop)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  labs(
+    title = "Relation entre population (totale et côtière) et déchets plastiques par habitant",
+    x = "Population (log)",
+    y = "Déchets plastiques par habitant",
+    color = "Type de population"
+  ) +
+  theme_minimal()
+
+```
+```
 ## Conclusion
 
 Recréez la visualisation:
 
+```{r}
+plastic_waste_coastal <- plastic_waste %>% 
+  mutate(coastal_pop_prop = coastal_pop / total_pop) %>%
+  filter(plastic_waste_per_cap < 3)
+```
 ```{r recreate-viz}
-# insert code here
+ggplot(plastic_waste_coastal,aes(x=coastal_pop_prop,y=plastic_waste_per_cap,color=continent))+
+  geom_point()+
+  geom_smooth(method = "loess", se = TRUE,color="black")+
+  labs(title="quantité de déchets plastiques VS proportion de la population côtière",subtitle="selon le continent",x="proportion de la population côtière(côtière/population totale)",y="nombre de déchets plastiques par habitant")+
+  theme_minimal()
 ```
